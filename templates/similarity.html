@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>สนทนากฎหมายไทย</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Kanit", sans-serif;
+        }
+
+        header {
+            background: url(https://images.unsplash.com/photo-1500964757637-c85e8a162699?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1978&q=80);
+            text-align: center;
+            width: 100%;
+            height: auto;
+            background-size: cover;
+            background-attachment: fixed;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header .overlay {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            color: #ffffff;
+            text-shadow: 2px 2px 2px #333333;
+            background-image: linear-gradient(135deg, #9f05ff69 10%, #fd5e086b 100%);
+        }
+
+        h1 {
+            font-size: 70px;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 1%;
+            width: 25%;
+            background-color: #f7e6ef;
+            border-radius: 25px;
+            margin-left: 3%;
+            position:fixed;
+        }
+
+        li a {
+            display: block;
+            color: #000;
+            padding: 8px 0 8px 16px;
+            text-decoration: none;
+        }
+
+        li a.active {
+            background-color: #985495;
+            color: white;
+            font-size: x-large;
+            text-shadow: 1px 1px 1px #333333;
+            border-radius: 25px;
+        }
+
+        li a:hover:not(.active) {
+            background-color: #555;
+            color: white;
+            text-shadow: 1px 1px 1px #333333;
+            border-radius: 25px;
+        }
+
+        a:link {
+            text-decoration: none;
+        }
+
+        a:visited {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        a:active {
+            text-decoration: underline;
+        }
+
+        div .Post {
+            list-style-type: none;
+            background-color: #f7e6ef;
+            border-radius: 25px;
+            height: 100%;
+        }
+
+        div.a {
+            text-align: center;
+            text-decoration: underline;
+            -webkit-text-decoration-color: red; /* Safari */  
+            text-decoration-color: red;
+            text-shadow: 2px 2px #FF00FF;
+        }
+
+        div.b {
+            text-decoration-line: underline;
+            text-decoration-style: wavy;
+        }  
+    </style>
+</head>
+
+<body style="background-color:rgb(215, 182, 223);">
+
+    <header>
+        <div class="overlay">
+            <br>
+            <h1>ปรึกษาปัญหากฎหมายไทย</h1>
+            <br>
+        </div>
+    </header>
+
+    <br>
+
+    <div style="margin-left:5%;padding:1px 20px;margin-right:5%; list-style-type: none; background-color: #f7e6ef; border-radius: 25px; height: 100%;">
+        <br> 
+        {% for row in rows %}
+        <div class="a">
+            <h2>คำถามของคุณ</h2> 
+        </div>
+        <br> 
+            <p><b>{{row.2}}</b></p>
+        <hr color="#0000">
+        <br>
+        <div class="a">
+            <h2>ค้นพบคำถามที่คล้ายกัน</h2> 
+        </div>
+        <div class="b">
+            <p>คล้ายอันดับ 1</p> 
+        </div>
+            <p><b>คำถาม : </b>{{row.5}}</p>
+            <p><b>คำตอบ : </b>{{row.6}}</p>
+        <hr style="height:2px;border-width:0;color:plum;background-color:plum">
+        <div class="b">
+            <p>คล้ายอันดับ 2</p> 
+        </div>
+            <p><b>คำถาม : </b>{{row.7}}</p>
+            <p><b>คำตอบ : </b>{{row.8}}</p>
+        <hr style="height:2px;border-width:0;color:plum;background-color:plum">
+        <div class="b">
+        <p>คล้ายอันดับ 3</p> 
+        </div>
+            <p><b>คำถาม : </b>{{row.9}}</p>
+            <p><b>คำตอบ : </b>{{row.10}}</p>
+        <hr style="height:2px;border-width:0;color:plum;background-color:plum">
+        
+        {% endfor %}
+    
+        <center>
+            <a href="/saveresult(happy)" class="btn btn-warning btn-xs">พอใจ</a>
+            <a href="/saveresult(unhappy)" class="btn btn-danger btn-xs" onclick="return confirm('คุณต้องการเพิ่มคำถามนี้หรือไม่?')">ยังไม่ได้คำตอบ</a>
+        </center>
+        <br>    
+    </div>
+    
+</body>
+
+</html>
