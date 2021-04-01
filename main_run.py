@@ -8,11 +8,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def showdata():
-        DataFrame = pd.read_csv('Data_similarity.csv')
-        DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
+        DataFrame = pd.read_csv('Data.csv')
+        DataFrame.fillna('', inplace=True)
+        #DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
         rows = []
         for i in range(len(DataFrame)-1,-1,-1) :
-                x = (i,DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'])
+                x = (i,DataFrame.at[i,'ID'],DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'],DataFrame.at[i,'TheAnswer'])
                 rows.append(x)
         rows = tuple(rows)
         return render_template('index.html' ,datas=rows)
@@ -27,7 +28,7 @@ def showsimilar():
         rows = []
         index = len(DataFrame)-1
         rows = []
-        x = (index ,DataFrame.at[index,'name'],DataFrame.at[index,'message'],DataFrame.at[index,'tag'],DataFrame.at[index,'time'],DataFrame.at[index,'ques_similar1'],DataFrame.at[index,'anws_similar1'],DataFrame.at[index,'ques_similar2'],DataFrame.at[index,'anws_similar2'],DataFrame.at[index,'ques_similar3'],DataFrame.at[index,'anws_similar3'],DataFrame.at[index,'SatisfactionInSearch'])
+        x = (index ,DataFrame.at[index,'ID'], DataFrame.at[index,'name'],DataFrame.at[index,'message'],DataFrame.at[index,'tag'],DataFrame.at[index,'time'],DataFrame.at[index,'ques_similar1'],DataFrame.at[index,'anws_similar1'],DataFrame.at[index,'ques_similar2'],DataFrame.at[index,'anws_similar2'],DataFrame.at[index,'ques_similar3'],DataFrame.at[index,'anws_similar3'],DataFrame.at[index,'SatisfactionInSearch'])
         rows.append(x)
         rows = tuple(rows)
         return render_template('similarity.html',rows=rows)
@@ -81,12 +82,11 @@ def update():
 def similarity():
     if request.method=="POST" :
         DataFrame = pd.read_csv('Data_similarity.csv')
-        #DataTag = pd.read_csv('Data_tag.csv')
         name = request.form['name']
         message = request.form['question']
-        r = requests.post("http://b652ed518f7b.ngrok.io/predict", data={'text': message})
+        r = requests.post("http://127.0.0.1:5006/predictLegalBERTth", data={'text': message})
         response =r.json()
-        #message = response['input_text']
+        ID = len(DataFrame)+1
         Tag = response['result_tag']
         Q_similar1 = response['result_Q1']
         A_similar1 = response['result_A1']
@@ -98,15 +98,15 @@ def similarity():
         Tag = dict_tag[Tag]
         time = datetime.now()
         time = time.strftime("%d/%m/%Y %H:%M:%S")
-        print(Tag)
-        print(time)
-        print(Q_similar1)
-        print(A_similar1)
-        print(Q_similar2)
-        print(A_similar2)
-        print(Q_similar3)
-        print(A_similar3)
-        add = pd.DataFrame([[name, message, Tag, time, Q_similar1, A_similar1, Q_similar2, A_similar2, Q_similar3, A_similar3]],columns=['name', 'message','tag', 'time', 'ques_similar1', 'anws_similar1', 'ques_similar2', 'anws_similar2', 'ques_similar3', 'anws_similar3'])
+        #print(Tag)
+        #print(time)
+        #print(Q_similar1)
+        #print(A_similar1)
+        #print(Q_similar2)
+        #print(A_similar2)
+        #print(Q_similar3)
+        #print(A_similar3)
+        add = pd.DataFrame([[ID, name, message, Tag, time, Q_similar1, A_similar1, Q_similar2, A_similar2, Q_similar3, A_similar3]],columns=['ID', 'name', 'message','tag', 'time', 'ques_similar1', 'anws_similar1', 'ques_similar2', 'anws_similar2', 'ques_similar3', 'anws_similar3'])
         DataFrame = DataFrame.append(add).reset_index(drop=True)
         DataFrame.to_csv('Data_similarity.csv', index=False)
         #addTag = pd.DataFrame([[name,message,Tag,time]],columns=['name','message','tag','time'])
@@ -128,68 +128,82 @@ def happy():
 def unhappy():
         DataFrame = pd.read_csv('Data_similarity.csv')
         DataFrame.loc[[len(DataFrame)-1],'SatisfactionInSearch'] = 'false'
+        data = pd.read_csv('Data.csv')
+        ID = len(data)+1
+        name = DataFrame['name'][len(DataFrame)-1]
+        message = DataFrame['message'][len(DataFrame)-1]
+        tag = DataFrame['tag'][len(DataFrame)-1]
+        time = DataFrame['time'][len(DataFrame)-1]
+        add = pd.DataFrame([[ID, name, message, tag, time]],columns=['ID', 'name', 'message','tag', 'time'])
+        data = data.append(add).reset_index(drop=True)
+        data.to_csv('Data.csv', index=False)
         DataFrame.to_csv('Data_similarity.csv', index=False)
         return redirect(url_for('showdata'))
 
 @app.route('/กฎหมายการละเมิด(Personal Rights)')
 def tag1():
-        DataFrame = pd.read_csv('Data_similarity.csv')
-        DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
+        DataFrame = pd.read_csv('Data.csv')
+        #DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
         DataFrame = DataFrame[DataFrame['tag'] == 'กฎหมายการละเมิด(Personal Rights)'].reset_index(drop=True)
+        DataFrame.fillna('', inplace=True)
         rows = []
         for i in range(len(DataFrame)-1,-1,-1) :
-                x = (i,DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'])
+                x = (i,DataFrame.at[i,'ID'],DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'],DataFrame.at[i,'TheAnswer'])
                 rows.append(x)
         rows = tuple(rows)
         return render_template('select.html', datas=rows)
 
 @app.route('/กฎหมายครอบครัว(Family)')
 def tag2():
-        DataFrame = pd.read_csv('Data_similarity.csv')
-        DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
+        DataFrame = pd.read_csv('Data.csv')
+        #DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
         DataFrame = DataFrame[DataFrame['tag'] == 'กฎหมายครอบครัว(Family)'].reset_index(drop=True)
+        DataFrame.fillna('', inplace=True)
         rows = []
         for i in range(len(DataFrame)-1,-1,-1) :
-                x = (i,DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'])
+                x = (i,DataFrame.at[i,'ID'],DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'],DataFrame.at[i,'TheAnswer'])
                 rows.append(x)
         rows = tuple(rows)
         return render_template('select.html', datas=rows)
 
 @app.route('/กฎหมายแรงงาน(Labor)')
 def tag3():
-        DataFrame = pd.read_csv('Data_similarity.csv')
-        DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
+        DataFrame = pd.read_csv('Data.csv')
+        #DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
         DataFrame = DataFrame[DataFrame['tag'] == 'กฎหมายแรงงาน(Labor)'].reset_index(drop=True)
+        DataFrame.fillna('', inplace=True)
         rows = []
         for i in range(len(DataFrame)-1,-1,-1) :
-                x = (i,DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'])
+                x = (i,DataFrame.at[i,'ID'],DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'],DataFrame.at[i,'TheAnswer'])
                 rows.append(x)
         rows = tuple(rows)
         return render_template('select.html', datas=rows)
 
 @app.route('/กฎหมายเอกเทศสัญญา(Contract)')
 def tag4():
-        DataFrame = pd.read_csv('Data_similarity.csv')
-        DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
+        DataFrame = pd.read_csv('Data.csv')
+        #DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
         DataFrame = DataFrame[DataFrame['tag'] == 'กฎหมายเอกเทศสัญญา(Contract)'].reset_index(drop=True)
+        DataFrame.fillna('', inplace=True)
         rows = []
         for i in range(len(DataFrame)-1,-1,-1) :
-                x = (i,DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'])
+                x = (i,DataFrame.at[i,'ID'],DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'],DataFrame.at[i,'TheAnswer'])
                 rows.append(x)
         rows = tuple(rows)
         return render_template('select.html', datas=rows)
 
 @app.route('/กฎหมายอาญา(Criminal)')
 def tag5():
-        DataFrame = pd.read_csv('Data_similarity.csv')
-        DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
+        DataFrame = pd.read_csv('Data.csv')
+        #DataFrame = DataFrame[DataFrame['SatisfactionInSearch'] == False].reset_index(drop=True)
         DataFrame = DataFrame[DataFrame['tag'] == 'กฎหมายอาญา(Criminal)'].reset_index(drop=True)
+        DataFrame.fillna('', inplace=True)
         rows = []
         for i in range(len(DataFrame)-1,-1,-1) :
-                x = (i,DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'])
+                x = (i,DataFrame.at[i,'ID'],DataFrame.at[i,'name'],DataFrame.at[i,'message'],DataFrame.at[i,'tag'],DataFrame.at[i,'time'],DataFrame.at[i,'TheAnswer'])
                 rows.append(x)
         rows = tuple(rows)
         return render_template('select.html', datas=rows)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5500)
+    app.run(debug=True, port=5007)

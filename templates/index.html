@@ -100,6 +100,12 @@
             border-radius: 25px;
             height: 100%;
         }
+
+        h4 {
+            text-decoration: underline;
+            -webkit-text-decoration-color: red; /* Safari */  
+            text-decoration-color: red;
+        }
     </style>
 </head>
 
@@ -128,9 +134,11 @@
         <br>
 
         {% for row in datas %}
-        <p>{{row.2}}<a href="/{{row.3}}" class="btn btn-link btn-md">{{row.3}}</a></p>
-        <p><b>ผู้โพสต์ : </b>{{row.1}}</p>
-        <p><b>เมื่อ : </b>{{row.4}}</p>
+        <p><b>หมายเลขกระทู้ที่ : </b>{{row.1}}</p>
+        <p>{{row.3}}<a href="/{{row.4}}" class="btn btn-link btn-md">{{row.4}}</a></p>
+        <p><b>ผู้โพสต์ : </b>{{row.2}}</p>
+        <p><b>เมื่อ : </b>{{row.5}}</p>
+        <h4>คำตอบ</h4> <p><b>{{row.6}}</b></p>
         <!-- <a href="/update" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{row.0}}">แก้ไข</a> -->
         <!-- <a href="/delete/{{ row.0 }}" class="btn btn-danger btn-xs" onclick="return confirm('คุณต้องการลบข้อมูลหรือไม่?')">ลบ</a> -->
         <!-- <hr color="#000"> -->
