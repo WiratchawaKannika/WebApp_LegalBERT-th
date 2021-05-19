@@ -40,7 +40,7 @@ The second. You run Web Application file : main_run.py
 And you run Web Application file for Admin page : admin_run.py 
 ```shell
 - python admin_run.py
-``
+```
 
 You will get URL, for example : ```http://127.0.0.1:5000/ ```  
 Copy and paste in your Web Browser.
